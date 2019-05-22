@@ -177,6 +177,7 @@ class App extends Component {
         }),
       ]);
       proposal.proposalIdStr = proposalIdStr;
+      proposal.proposedAddress = web3.utils.toChecksumAddress(proposal.data.replace("0x0a3b0a4f000000000000000000000000", "0x"));
       console.log('proposal', proposal);
       console.log('voteEvents', voteEvents);
       console.log('removeVoteEvents', removeVoteEvents);
@@ -271,8 +272,12 @@ class App extends Component {
                     <td>{ proposal.proposalIdStr.toString() }</td>
                   </tr>
                   <tr>
-                    <td className="bg-gray">Address</td>
+                    <td className="bg-gray">Proposer</td>
                     <td className="td-address">{ addressToEtherscanLink(proposal.feeRecipient) }</td>
+                  </tr>
+                  <tr>
+                    <td className="bg-gray">Address</td>
+                    <td className="td-address">{ addressToEtherscanLink(proposal.proposedAddress) }</td>
                   </tr>
                   <tr>
                     <td className="bg-gray">Twitter</td>
