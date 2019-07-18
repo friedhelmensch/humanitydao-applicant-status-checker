@@ -27,7 +27,7 @@ const makeContractInfoFetcher = web3 => {
         .getProposal(i)
         .call();
       if (proposal.result !== 0) break;
-      console.log(i);
+      //console.log(i);
       proposals.push({ ...proposal, id: i });
     }
 
@@ -66,9 +66,6 @@ const makeContractInfoFetcher = web3 => {
       ]);
 
       proposal.proposalIdStr = proposalIdStr;
-      proposal.proposedAddress = web3.utils.toChecksumAddress(
-        proposal.data.replace("0x0a3b0a4f000000000000000000000000", "0x")
-      );
 
       return {
         proposal,

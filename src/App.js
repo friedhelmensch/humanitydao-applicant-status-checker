@@ -123,12 +123,9 @@ class App extends Component {
         web3
       );
       this.setState({
-        isSearching: true,
         fetchProposalState,
         fetchAllProposals
       });
-
-      await this.fetchAndPopulate("136");
     } catch (error) {
       alert(
         `Failed to load web3, accounts, or contract. Check console for details.`
@@ -165,6 +162,8 @@ class App extends Component {
       activeProposals
     } = this.state;
 
+    console.log(proposal);
+
     if (!web3) {
       return (
         <div className="text-center pt-5">
@@ -197,20 +196,6 @@ class App extends Component {
         </nav>
 
         <div className="container pt-3 pb-3">
-          <form
-            onSubmit={this.handleSearch}
-            className="form-inline justify-content-center mb-5"
-          >
-            <input
-              type="text"
-              className="form-control"
-              value={this.state.textToSearch}
-              onChange={this.handleProposalIdTextChange}
-              placeholder="Proposal ID"
-            />
-            <input type="submit" className="btn btn-primary" value="Search" />
-          </form>
-
           <form
             onSubmit={this.handleGetAllProposals}
             className="form-inline justify-content-center mb-5"
@@ -265,6 +250,20 @@ class App extends Component {
             </div>
           )}
 
+          <form
+            onSubmit={this.handleSearch}
+            className="form-inline justify-content-center mb-5"
+          >
+            <input
+              type="text"
+              className="form-control"
+              value={this.state.textToSearch}
+              onChange={this.handleProposalIdTextChange}
+              placeholder="Proposal ID"
+            />
+            <input type="submit" className="btn btn-primary" value="Search" />
+          </form>
+
           {proposal && (
             <div className="mb-5">
               <div className="section-title">Proposal</div>
@@ -280,20 +279,48 @@ class App extends Component {
                       {addressToEtherscanLink(proposal.feeRecipient)}
                     </td>
                   </tr>
-                  <tr>
-                    <td className="bg-gray">Address</td>
-                    <td className="td-address">
-                      {addressToEtherscanLink(proposal.proposedAddress)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="bg-gray">Twitter</td>
-                    <td>
-                      {twitterUsernameToLink(
-                        applyEventsFromProposalId[0].returnValues.username
-                      )}
-                    </td>
-                  </tr>
+                  {proposal.data.includes("0a3b0a4f") ? (
+                    <tr>
+                      <td className="bg-gray">Address</td>
+                      <td className="td-address">
+                        {addressToEtherscanLink(
+                          web3.utils.toChecksumAddress(
+                            proposal.data.replace(
+                              "0x0a3b0a4f000000000000000000000000",
+                              "0x"
+                            )
+                          )
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr>
+                      <td className="bg-gray">Proposal type</td>
+                      <td>Set Proposal fee</td>
+                    </tr>
+                  )}
+                  {proposal.data.includes("0a3b0a4f") ? (
+                    <tr>
+                      <td className="bg-gray">Twitter</td>
+                      <td>
+                        {twitterUsernameToLink(
+                          applyEventsFromProposalId[0].returnValues.username
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr>
+                      <td className="bg-gray">Proposed fee</td>
+                      <td>
+                        {parseInt(
+                          proposal.data.replace(
+                            "0x10bf5068000000000000000000000000000000000000000000000",
+                            "0x"
+                          )
+                        ) / 1e18}
+                      </td>
+                    </tr>
+                  )}
                   <tr>
                     <td className="bg-gray">Starting Time</td>
                     <td>
