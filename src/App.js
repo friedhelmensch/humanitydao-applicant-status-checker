@@ -147,8 +147,14 @@ class App extends Component {
     event.preventDefault();
 
     this.setState({ isSearching: true });
-    const activeProposals = await this.state.fetchAllProposals();
-    this.setState({ isSearching: false, activeProposals });
+    try {
+      const activeProposals = await this.state.fetchAllProposals();
+      this.setState({ isSearching: false, activeProposals });
+    } catch (error) {
+      this.setState({ isSearching: false });
+      alert("Failed fetching proposals. Try again soon" + error.message);
+      console.error(error);
+    }
   };
 
   render() {
